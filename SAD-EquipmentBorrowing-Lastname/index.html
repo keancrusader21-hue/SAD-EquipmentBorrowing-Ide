@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Equipment Borrowing Monitoring System</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Equipment Borrowing Monitoring System</h1>
+    <div class="topbar-right">
+      <span id="currentUser"></span>
+      <button id="logoutBtn" class="btn-small btn-danger">Logout</button>
+    </div>
+  </header>
+
+  <main class="container">
+    
+    <section class="stats-grid">
+      <div class="stat-card"><span id="statTotal">0</span><label>Total Equipment</label></div>
+      <div class="stat-card"><span id="statAvailable">0</span><label>Available</label></div>
+      <div class="stat-card"><span id="statBorrowed">0</span><label>Borrowed</label></div>
+      <div class="stat-card"><span id="statReturned">0</span><label>Returned</label></div>
+      <div class="stat-card"><span id="statOverdue">0</span><label>Overdue</label></div>
+    </section>
+
+    
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Equipment</h2>
+        <button id="addEquipmentBtn" class="btn-primary">+ Add Equipment</button>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" id="equipmentSearch" placeholder="Search by name or asset code..." />
+        <select id="equipmentAvailabilityFilter">
+          <option value="All">All</option>
+          <option value="Available">Available</option>
+          <option value="Borrowed">Borrowed</option>
+        </select>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Code</th><th>Equipment</th><th>Category</th><th>Condition</th><th>Availability</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="equipmentTableBody"></tbody>
+      </table>
+    </section>
+
+    
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Borrowing Transactions</h2>
+        <button id="recordBorrowingBtn" class="btn-primary">+ Record Borrowing</button>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" id="transactionSearch" placeholder="Search by borrower or equipment..." />
+        <select id="transactionStatusFilter">
+          <option value="All">All</option>
+          <option value="Borrowed">Borrowed</option>
+          <option value="Returned">Returned</option>
+          <option value="Overdue">Overdue</option>
+        </select>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Equipment</th><th>Borrower</th><th>Type</th><th>Department</th>
+            <th>Borrowed</th><th>Due</th><th>Returned</th><th>Status</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="transactionsTableBody"></tbody>
+      </table>
+    </section>
+  </main>
+
+  
+  <div id="equipmentModal" class="modal-overlay">
+    <div class="modal">
+      <h3 id="equipmentFormTitle">Add New Equipment</h3>
+      <form id="equipmentForm">
+        <label>Equipment Name</label>
+        <input type="text" id="eqName" required />
+
+        <label>Category</label>
+        <input type="text" id="eqCategory" required />
+
+        <label>Asset Code</label>
+        <input type="text" id="eqAssetCode" required />
+
+        <label>Condition</label>
+        <select id="eqCondition">
+          <option value="Good">Good</option>
+          <option value="Fair">Fair</option>
+          <option value="For Repair">For Repair</option>
+        </select>
+
+        <p id="equipmentFormError" class="error-text"></p>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="closeEquipmentModal()">Cancel</button>
+          <button type="submit" class="btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  
+  <div id="borrowModal" class="modal-overlay">
+    <div class="modal">
+      <h3>New Borrowing Transaction</h3>
+      <form id="borrowForm">
+        <label>Equipment</label>
+        <select id="borrowEquipmentSelect" required></select>
+
+        <label>Borrower Name</label>
+        <input type="text" id="borrowerName" required />
+
+        <label>Borrower Type</label>
+        <select id="borrowerType">
+          <option value="Student">Student</option>
+          <option value="Faculty">Faculty</option>
+          <option value="Staff">Staff</option>
+        </select>
+
+        <label>Department</label>
+        <input type="text" id="borrowerDepartment" required />
+
+        <label>Date Borrowed</label>
+        <input type="date" id="dateBorrowed" required />
+
+        <label>Due Date</label>
+        <input type="date" id="dueDate" required />
+
+        <p id="borrowFormError" class="error-text"></p>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="closeBorrowModal()">Cancel</button>
+          <button type="submit" class="btn-primary">Save Borrowing Transaction</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/equipment.js"></script>
+  <script src="js/transactions.js"></script>
+  <script>
+    (async function init() {
+      const session = await requireAuth();
+      if (!session) return;
+      await loadEquipment();
+      await loadTransactions();
+    })();
+  </script>
+</body>
+</html>
