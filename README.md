@@ -18,8 +18,8 @@ https://keancrusader21-hue.github.io/SAD-EquipmentBorrowing-Ide/
 ```
 
 ## Test Account (Supabase Auth)
-Email: keancrusader21@gmail.com
-Password: Skemberdo_0909
+Email: admin@gmail.com
+Password: 123456
 
 
 ## 3. README Documentation
